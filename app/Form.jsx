@@ -1,4 +1,7 @@
 'use client'
+import Image from 'next/image'
+import copyIcon from '../public/copy.svg'
+import backArrow from '../public/arrow.png'
 
 import { useState } from "react"
 import GridLoader from 'react-spinners/GridLoader'
@@ -71,11 +74,13 @@ export default function Form() {
         
       )}
       {complete && (
-        <div>
-          <button onClick={returnToForm}>Tillbaka</button>
+        <div className=''>
+          <button className="mb-10 flex items-center justify-between" onClick={returnToForm}>  <Image className="mr-2" src={backArrow} width={15} height={20} alt='copy' unoptimized={true} />Tillbaka</button>
          
-          <div className="rounded-lg shadow-md p-10">
-          <h1>{adResponse}</h1>
+          <div className="relative rounded-lg shadow mx-1  p-6 pt-16 mb-12">
+          <button className="absolute top-0 right-0 p-3 border-l border-b rounded-sm" onClick={() => {navigator.clipboard.writeText(adResponse)}}>
+          <Image className="" src={copyIcon} width={20} height={20} alt='copy' unoptimized={true} /></button>  
+          <h1 className='text-sm'>{adResponse}</h1>
           </div>
         </div>
         
