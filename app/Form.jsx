@@ -31,21 +31,46 @@ export default function Form() {
     setComplete(false)
   }
 
+  function copyToClipboard() {
+    navigator.clipboard.writeText(adResponse)
+    alert('Kopierad!')
+  }
+
   async function saveFormData(e) {
     e.preventDefault()
     setLoading(true)
-    console.log(prompt)
-    const response = await fetch('/api/hello/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ prompt })
-    }).then((response) => response.json())
-    setAdResponse(response.text)
-    setLoading(false); 
-    setComplete(true);
+  
+    try {
+      const response = await fetch('/api/hello/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ prompt })
+      })
+  
+      
+      if (!response.ok) {
+        throw new Error(`Server responded with a status of ${response.status}`);
+      }
+  
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        throw new TypeError('Expected JSON response from the server, but got something else.')
+      }
+  
+      const responseData = await response.json()
+      console.log(responseData)
+      setAdResponse(responseData.text)
+  
+      setComplete(true)
+    } catch (error) {
+      console.error('An error occurred while fetching data:', error)
+    } finally {
+      setLoading(false)
+    }
   }
+  
 
   return (
     <div className="relative h-[475px] flex  justify-center bg-white z-50 p-6  shadow mx-6 rounded max-w-4xl  md:mx-auto md:h-[500px]">
@@ -78,7 +103,7 @@ export default function Form() {
           <button className="mb-10 flex items-center justify-between" onClick={returnToForm}>  <Image className="mr-2" src={backArrow} width={15} height={20} alt='copy' unoptimized={true} />Tillbaka</button>
          
           <div className="relative rounded-lg shadow mx-1  p-6 pt-16 mb-12">
-          <button className="absolute top-0 right-0 p-3 border-l border-b rounded-sm" onClick={() => {navigator.clipboard.writeText(adResponse)}}>
+          <button className="absolute top-0 right-0 p-3 border-l border-b rounded-sm" onClick={copyToClipboard}>
           <Image className="" src={copyIcon} width={20} height={20} alt='copy' unoptimized={true} /></button>  
           <h1 className='text-sm'>{adResponse}</h1>
           </div>
