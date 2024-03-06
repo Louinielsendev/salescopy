@@ -16,7 +16,7 @@ export default function Form() {
   })
   const [adResponse, setAdResponse] = useState()
   
-  const prompt = `Generera en annonstext för en produkt med namnet: ${formData.produktname}, beskrivningen: ${formData.desc} ${formData.kampanj ? `och erbjudande: ${formData.kampanj}%` : ''}. Skriv en text som fångar läsarnas uppmärksamhet, samtidigt som den är kort och konkret. `
+  const prompt = `Skapa en engagerande annonstext för produkten '${formData.produktname}'. Den ska innehålla en kort och lockande beskrivning: '${formData.desc}'. ${formData.kampanj ? `Inkludera även ett specialerbjudande med ${formData.kampanj}% rabatt.` : ''} Målet är att skapa en text som direkt fångar läsarnas intresse och motiverar dem att lära sig mer eller köpa produkten. Annonstexten bör vara koncis och inbjudande.`
 
   function updateProductData(e) {
     setFormData(prevForm => {
@@ -37,6 +37,9 @@ export default function Form() {
   }
 
   async function saveFormData(e) {
+    if(!formData.produktname || !formData.desc){
+      return
+    }
     e.preventDefault()
     setLoading(true)
   
@@ -86,14 +89,14 @@ export default function Form() {
         <form action="" method="post">
           <label className="text-xs md:text-base" htmlFor="produktname">Produktens/tjänstens namn</label>
           <br />
-          <input value={formData.produktname} placeholder="salescopy.se" className="text-sm border outline-buttoncolor mb-6 rounded-lg p-2 w-3/5 md:text-base" type="text" name="produktname" onChange={updateProductData} />
+          <input value={formData.produktname} placeholder="salescopy.se" className="text-sm border outline-buttoncolor mb-6 rounded-lg p-2 w-3/5 md:text-base" type="text" name="produktname" required onChange={updateProductData} />
           <br />
           <label className="text-xs md:text-base"  htmlFor="kampanj">Kampanj</label>
           <br />
           <input value={formData.kampanj} placeholder="20%" className="text-sm border outline-buttoncolor mb-6 rounded-lg p-2 w-3/5 md:text-base" type="text" name="kampanj" onChange={updateProductData} />
           <br />
           <label className="text-xs md:text-base" htmlFor="desc">Berätta mer om produkten/tjänsten</label>
-          <textarea value={formData.desc} placeholder="Med hjälp av AI, autogenererar Salescopy.se unika annonstexter baserat på produkten och som står ut från mängden." className="text-sm border outline-buttoncolor w-full rounded-lg p-2 resize-none mb-20 md:text-base" name="desc" id="" rows="5" onChange={updateProductData}></textarea>
+          <textarea value={formData.desc} placeholder="Med hjälp av AI, autogenererar Salescopy.se unika annonstexter baserat på produkten och som står ut från mängden." className="text-sm border outline-buttoncolor w-full rounded-lg p-2 resize-none mb-20 md:text-base" name="desc" required id="" rows="5" onChange={updateProductData}></textarea>
           <button onClick={saveFormData} className="bg-buttoncolor p-4 text-white text-xs rounded-full float-right -mt-12 md:text-base md:-mt-16 ">Generera annons</button>
         </form>
         
